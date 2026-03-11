@@ -8,46 +8,46 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: lf-backend
-    restart: unless-stopped
-    depends_on:
-      - postgres
-    environment:
-      GRPC_PORT: 50051
-      DATABASE_URL: postgresql+psycopg://postgres:postgres@postgres:5432/lostfound
-      JWT_SECRET: dev-secret
-      JWT_ISSUER: lostfound-backend
-      MATCH_THRESHOLD: 0.55
-    ports:
-      - "50051:50051"
-    volumes:
-      - uploads_data:/app/uploads
+  # backend:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: lf-backend
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - postgres
+  #   environment:
+  #     GRPC_PORT: 50051
+  #     DATABASE_URL: postgresql+psycopg://postgres:postgres@postgres:5432/lostfound
+  #     JWT_SECRET: dev-secret
+  #     JWT_ISSUER: lostfound-backend
+  #     MATCH_THRESHOLD: 0.55
+  #   ports:
+  #     - "50051:50051"
+  #   volumes:
+  #     - uploads_data:/app/uploads
 
-  gateway:
-    build:
-      context: ../gateway
-      dockerfile: Dockerfile
-    container_name: lf-gateway
-    restart: unless-stopped
-    depends_on:
-      - backend
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      Grpc__BackendAddress: http://backend:50051
-      Jwt__Secret: dev-secret
-      Jwt__Issuer: lostfound-backend
-    ports:
-      - "8080:8080"
-    volumes:
-      - uploads_data:/app/uploads
+  # gateway:
+  #   build:
+  #     context: ../gateway
+  #     dockerfile: Dockerfile
+  #   container_name: lf-gateway
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - backend
+  #   environment:
+  #     ASPNETCORE_ENVIRONMENT: Development
+  #     Grpc__BackendAddress: http://backend:50051
+  #     Jwt__Secret: dev-secret
+  #     Jwt__Issuer: lostfound-backend
+  #   ports:
+  #     - "8080:8080"
+  #   volumes:
+  #     - uploads_data:/app/uploads
 
 volumes:
   postgres_data:

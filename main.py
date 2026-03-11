@@ -1,13 +1,19 @@
 from concurrent import futures
 from datetime import datetime, timezone
+import html
+import json
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from threading import Thread
+from urllib.parse import parse_qs, urlparse
 
 import grpc
-from sqlalchemy import and_, func, or_, select
+from sqlalchemy import and_, func, inspect, or_, select, text
 
 from app.core.config import settings
 from app.core.security import hash_password, issue_access_token, verify_password
 from app.domain.entities.user import (
     Base,
+    DeviceToken,
     ItemReport,
     MatchCandidate,
     MatchDecision,
@@ -76,6 +82,133 @@ def _ensure_default_data() -> None:
     Base.metadata.create_all(bind=engine)
 
 
+def _upsert_device_token(session, user_id: str, token: str, platform: str = "expo") -> None:
+    existing = session.scalar(select(DeviceToken).where(DeviceToken.token == token))
+    if existing:
+        existing.user_id = user_id
+        existing.platform = platform
+        return
+
+    session.add(DeviceToken(user_id=user_id, token=token, platform=platform))
+
+
+def _format_cell(value) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, (dict, list)):
+        return json.dumps(value, ensure_ascii=False)
+    return str(value)
+
+
+def _load_tables_data(limit_per_table: int = 200) -> dict[str, list[dict[str, str]]]:
+    inspector = inspect(engine)
+    table_names = inspector.get_table_names()
+    output: dict[str, list[dict[str, str]]] = {}
+
+    with engine.connect() as connection:
+        for table_name in table_names:
+            rows = connection.execute(text(f'SELECT * FROM "{table_name}" LIMIT {limit_per_table}')).mappings().all()
+            output[table_name] = [
+                {column: _format_cell(value) for column, value in row.items()}
+                for row in rows
+            ]
+
+    return output
+
+
+def _build_dashboard_html(selected_table: str | None = None) -> str:
+    tables_data = _load_tables_data()
+    table_names = sorted(tables_data.keys())
+    active = selected_table if selected_table in tables_data else (table_names[0] if table_names else "")
+    rows = tables_data.get(active, [])
+    columns = list(rows[0].keys()) if rows else []
+
+    tabs = "".join(
+        (
+            f'<a class="tab {"active" if name == active else ""}" href="/?table={html.escape(name)}">'
+            f'{html.escape(name)} <span class="count">{len(tables_data.get(name, []))}</span></a>'
+        )
+        for name in table_names
+    )
+
+    if rows and columns:
+        header = "".join(f"<th>{html.escape(column)}</th>" for column in columns)
+        body = "".join(
+            "<tr>" + "".join(f"<td>{html.escape(row.get(column, ''))}</td>" for column in columns) + "</tr>"
+            for row in rows
+        )
+        table_markup = f"<table><thead><tr>{header}</tr></thead><tbody>{body}</tbody></table>"
+    else:
+        table_markup = '<div class="empty">No rows in this table.</div>'
+
+    return f"""
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Loss & Found DB Studio</title>
+  <style>
+    body {{ font-family: Inter, Arial, sans-serif; margin: 0; background: #f7f8fb; color: #0f172a; }}
+    .wrap {{ padding: 24px; }}
+    .title {{ font-size: 20px; font-weight: 700; margin: 0 0 12px; }}
+    .muted {{ color: #64748b; margin: 0 0 20px; }}
+    .tabs {{ display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }}
+    .tab {{ text-decoration: none; color: #334155; background: white; border: 1px solid #e2e8f0; padding: 8px 12px; border-radius: 10px; font-size: 13px; }}
+    .tab.active {{ border-color: #2563eb; color: #1d4ed8; background: #eff6ff; }}
+    .count {{ background: #e2e8f0; color: #334155; border-radius: 10px; padding: 2px 7px; margin-left: 6px; font-size: 12px; }}
+    .tab.active .count {{ background: #dbeafe; color: #1d4ed8; }}
+    .panel {{ background: white; border: 1px solid #e2e8f0; border-radius: 14px; overflow: auto; }}
+    table {{ border-collapse: collapse; width: 100%; min-width: 900px; }}
+    th, td {{ text-align: left; font-size: 12px; padding: 10px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }}
+    th {{ position: sticky; top: 0; background: #f8fafc; z-index: 1; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #475569; }}
+    .empty {{ padding: 20px; color: #64748b; }}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1 class="title">Loss & Found DB Studio</h1>
+    <p class="muted">Prisma-style read-only table browser for backend data</p>
+    <div class="tabs">{tabs or '<span class="muted">No tables found.</span>'}</div>
+    <div class="panel">{table_markup}</div>
+  </div>
+</body>
+</html>
+"""
+
+
+class DashboardHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        parsed = urlparse(self.path)
+        if parsed.path == "/api/tables":
+            payload = _load_tables_data()
+            body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
+
+        query = parse_qs(parsed.query)
+        selected_table = query.get("table", [None])[0]
+        body = _build_dashboard_html(selected_table).encode("utf-8")
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def log_message(self, format, *args):
+        return
+
+
+def _run_dashboard_server() -> None:
+    server = ThreadingHTTPServer(("0.0.0.0", settings.dashboard_port), DashboardHandler)
+    print(f"[{_now_iso()}] DB dashboard available on http://0.0.0.0:{settings.dashboard_port}")
+    server.serve_forever()
+
+
 def _build_matches_for_item(session, item: ItemReport) -> None:
     opposite = ReportType.FOUND if item.item_type == ReportType.LOST else ReportType.LOST
     candidates = session.scalars(
@@ -127,6 +260,8 @@ class AuthService(user_pb2_grpc.AuthServiceServicer):
                 password_hash=hash_password(request.password),
             )
             session.add(user)
+            session.flush()
+            _upsert_device_token(session, user.id, f"session:{user.id}")
             session.commit()
             token = issue_access_token(user.id, user.email)
             return user_pb2.AuthResponse(user_id=user.id, email=user.email, full_name=user.full_name, token=token)
@@ -139,6 +274,8 @@ class AuthService(user_pb2_grpc.AuthServiceServicer):
                 context.set_details("Invalid credentials")
                 return user_pb2.AuthResponse()
 
+            _upsert_device_token(session, user.id, f"session:{user.id}")
+            session.commit()
             token = issue_access_token(user.id, user.email)
             return user_pb2.AuthResponse(user_id=user.id, email=user.email, full_name=user.full_name, token=token)
 
@@ -320,6 +457,8 @@ class ProfileService(user_pb2_grpc.ProfileServiceServicer):
 
 def serve() -> None:
     _ensure_default_data()
+    dashboard_thread = Thread(target=_run_dashboard_server, daemon=True)
+    dashboard_thread.start()
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=16))
     user_pb2_grpc.add_AuthServiceServicer_to_server(AuthService(), server)
     user_pb2_grpc.add_ItemServiceServicer_to_server(ItemService(), server)
