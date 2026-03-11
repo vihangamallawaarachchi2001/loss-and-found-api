@@ -1,0 +1,8 @@
+grpcio==1.78.0
+grpcio-tools==1.78.0
+protobuf==6.33.0
+sqlalchemy==2.0.44
+psycopg[binary]==3.2.12
+passlib[bcrypt]==1.7.4
+pyjwt==2.10.1
+alembic==1.16.5
