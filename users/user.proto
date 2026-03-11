@@ -1,0 +1,146 @@
+syntax = "proto3";
+
+package lostfound.v1;
+
+service AuthService {
+  rpc Login (LoginRequest) returns (AuthResponse);
+  rpc Signup (SignupRequest) returns (AuthResponse);
+  rpc ForgotPassword (ForgotPasswordRequest) returns (OperationResult);
+  rpc ResetPassword (ResetPasswordRequest) returns (OperationResult);
+}
+
+service ItemService {
+  rpc CreateLostItem (CreateItemRequest) returns (ItemResponse);
+  rpc CreateFoundItem (CreateItemRequest) returns (ItemResponse);
+  rpc ListLostItems (ListItemsRequest) returns (ListItemsResponse);
+  rpc ListFoundItems (ListItemsRequest) returns (ListItemsResponse);
+  rpc GetItem (GetItemRequest) returns (ItemResponse);
+}
+
+service MatchService {
+  rpc ListOwnerAlerts (ListOwnerAlertsRequest) returns (ListOwnerAlertsResponse);
+  rpc AcceptMatch (MatchDecisionRequest) returns (OperationResult);
+  rpc RejectMatch (MatchDecisionRequest) returns (OperationResult);
+  rpc MarkClaimed (MatchDecisionRequest) returns (OperationResult);
+}
+
+service ProfileService {
+  rpc GetProfile (GetProfileRequest) returns (ProfileResponse);
+  rpc UpdateProfile (UpdateProfileRequest) returns (ProfileResponse);
+}
+
+message OperationResult {
+  bool success = 1;
+  string message = 2;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message SignupRequest {
+  string email = 1;
+  string password = 2;
+  string full_name = 3;
+}
+
+message AuthResponse {
+  string user_id = 1;
+  string email = 2;
+  string full_name = 3;
+  string token = 4;
+}
+
+message ForgotPasswordRequest {
+  string email = 1;
+}
+
+message ResetPasswordRequest {
+  string email = 1;
+  string otp = 2;
+  string new_password = 3;
+}
+
+message CreateItemRequest {
+  string user_id = 1;
+  string title = 2;
+  string description = 3;
+  string category = 4;
+  string location = 5;
+  string event_date = 6;
+  repeated string image_paths = 7;
+}
+
+message ListItemsRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+}
+
+message GetItemRequest {
+  string id = 1;
+}
+
+message ItemResponse {
+  string id = 1;
+  string user_id = 2;
+  string item_type = 3;
+  string title = 4;
+  string description = 5;
+  string category = 6;
+  string location = 7;
+  string event_date = 8;
+  string status = 9;
+  repeated string image_paths = 10;
+  double text_score = 11;
+  double image_score = 12;
+  double confidence = 13;
+  string created_at = 14;
+}
+
+message ListItemsResponse {
+  repeated ItemResponse items = 1;
+  int32 total = 2;
+}
+
+message ListOwnerAlertsRequest {
+  string owner_user_id = 1;
+}
+
+message OwnerAlert {
+  string lost_item_id = 1;
+  string found_item_id = 2;
+  double text_score = 3;
+  double image_score = 4;
+  double confidence = 5;
+  string status = 6;
+}
+
+message ListOwnerAlertsResponse {
+  repeated OwnerAlert alerts = 1;
+}
+
+message MatchDecisionRequest {
+  string lost_item_id = 1;
+  string found_item_id = 2;
+  string decided_by_user_id = 3;
+}
+
+message GetProfileRequest {
+  string user_id = 1;
+}
+
+message UpdateProfileRequest {
+  string user_id = 1;
+  string full_name = 2;
+  string phone = 3;
+  string avatar_path = 4;
+}
+
+message ProfileResponse {
+  string user_id = 1;
+  string email = 2;
+  string full_name = 3;
+  string phone = 4;
+  string avatar_path = 5;
+}
