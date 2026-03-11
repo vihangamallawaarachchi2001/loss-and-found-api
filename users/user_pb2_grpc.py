@@ -25,7 +25,7 @@ if _version_not_supported:
     )
 
 
-class UserServiceStub(object):
+class AuthServiceStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -34,43 +34,91 @@ class UserServiceStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.CreateUser = channel.unary_unary(
-                '/user.UserService/CreateUser',
-                request_serializer=users_dot_user__pb2.CreateUserRequest.SerializeToString,
-                response_deserializer=users_dot_user__pb2.UserResponse.FromString,
+        self.Login = channel.unary_unary(
+                '/lostfound.v1.AuthService/Login',
+                request_serializer=users_dot_user__pb2.LoginRequest.SerializeToString,
+                response_deserializer=users_dot_user__pb2.AuthResponse.FromString,
+                _registered_method=True)
+        self.Signup = channel.unary_unary(
+                '/lostfound.v1.AuthService/Signup',
+                request_serializer=users_dot_user__pb2.SignupRequest.SerializeToString,
+                response_deserializer=users_dot_user__pb2.AuthResponse.FromString,
+                _registered_method=True)
+        self.ForgotPassword = channel.unary_unary(
+                '/lostfound.v1.AuthService/ForgotPassword',
+                request_serializer=users_dot_user__pb2.ForgotPasswordRequest.SerializeToString,
+                response_deserializer=users_dot_user__pb2.OperationResult.FromString,
+                _registered_method=True)
+        self.ResetPassword = channel.unary_unary(
+                '/lostfound.v1.AuthService/ResetPassword',
+                request_serializer=users_dot_user__pb2.ResetPasswordRequest.SerializeToString,
+                response_deserializer=users_dot_user__pb2.OperationResult.FromString,
                 _registered_method=True)
 
 
-class UserServiceServicer(object):
+class AuthServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def CreateUser(self, request, context):
+    def Login(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def Signup(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ForgotPassword(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ResetPassword(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
 
-def add_UserServiceServicer_to_server(servicer, server):
+def add_AuthServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'CreateUser': grpc.unary_unary_rpc_method_handler(
-                    servicer.CreateUser,
-                    request_deserializer=users_dot_user__pb2.CreateUserRequest.FromString,
-                    response_serializer=users_dot_user__pb2.UserResponse.SerializeToString,
+            'Login': grpc.unary_unary_rpc_method_handler(
+                    servicer.Login,
+                    request_deserializer=users_dot_user__pb2.LoginRequest.FromString,
+                    response_serializer=users_dot_user__pb2.AuthResponse.SerializeToString,
+            ),
+            'Signup': grpc.unary_unary_rpc_method_handler(
+                    servicer.Signup,
+                    request_deserializer=users_dot_user__pb2.SignupRequest.FromString,
+                    response_serializer=users_dot_user__pb2.AuthResponse.SerializeToString,
+            ),
+            'ForgotPassword': grpc.unary_unary_rpc_method_handler(
+                    servicer.ForgotPassword,
+                    request_deserializer=users_dot_user__pb2.ForgotPasswordRequest.FromString,
+                    response_serializer=users_dot_user__pb2.OperationResult.SerializeToString,
+            ),
+            'ResetPassword': grpc.unary_unary_rpc_method_handler(
+                    servicer.ResetPassword,
+                    request_deserializer=users_dot_user__pb2.ResetPasswordRequest.FromString,
+                    response_serializer=users_dot_user__pb2.OperationResult.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'user.UserService', rpc_method_handlers)
+            'lostfound.v1.AuthService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('user.UserService', rpc_method_handlers)
+    server.add_registered_method_handlers('lostfound.v1.AuthService', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
-class UserService(object):
+class AuthService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def CreateUser(request,
+    def Login(request,
             target,
             options=(),
             channel_credentials=None,
@@ -83,9 +131,650 @@ class UserService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/user.UserService/CreateUser',
-            users_dot_user__pb2.CreateUserRequest.SerializeToString,
-            users_dot_user__pb2.UserResponse.FromString,
+            '/lostfound.v1.AuthService/Login',
+            users_dot_user__pb2.LoginRequest.SerializeToString,
+            users_dot_user__pb2.AuthResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def Signup(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/lostfound.v1.AuthService/Signup',
+            users_dot_user__pb2.SignupRequest.SerializeToString,
+            users_dot_user__pb2.AuthResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ForgotPassword(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/lostfound.v1.AuthService/ForgotPassword',
+            users_dot_user__pb2.ForgotPasswordRequest.SerializeToString,
+            users_dot_user__pb2.OperationResult.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ResetPassword(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/lostfound.v1.AuthService/ResetPassword',
+            users_dot_user__pb2.ResetPasswordRequest.SerializeToString,
+            users_dot_user__pb2.OperationResult.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+
+class ItemServiceStub(object):
+    """Missing associated documentation comment in .proto file."""
+
+    def __init__(self, channel):
+        """Constructor.
+
+        Args:
+            channel: A grpc.Channel.
+        """
+        self.CreateLostItem = channel.unary_unary(
+                '/lostfound.v1.ItemService/CreateLostItem',
+                request_serializer=users_dot_user__pb2.CreateItemRequest.SerializeToString,
+                response_deserializer=users_dot_user__pb2.ItemResponse.FromString,
+                _registered_method=True)
+        self.CreateFoundItem = channel.unary_unary(
+                '/lostfound.v1.ItemService/CreateFoundItem',
+                request_serializer=users_dot_user__pb2.CreateItemRequest.SerializeToString,
+                response_deserializer=users_dot_user__pb2.ItemResponse.FromString,
+                _registered_method=True)
+        self.ListLostItems = channel.unary_unary(
+                '/lostfound.v1.ItemService/ListLostItems',
+                request_serializer=users_dot_user__pb2.ListItemsRequest.SerializeToString,
+                response_deserializer=users_dot_user__pb2.ListItemsResponse.FromString,
+                _registered_method=True)
+        self.ListFoundItems = channel.unary_unary(
+                '/lostfound.v1.ItemService/ListFoundItems',
+                request_serializer=users_dot_user__pb2.ListItemsRequest.SerializeToString,
+                response_deserializer=users_dot_user__pb2.ListItemsResponse.FromString,
+                _registered_method=True)
+        self.GetItem = channel.unary_unary(
+                '/lostfound.v1.ItemService/GetItem',
+                request_serializer=users_dot_user__pb2.GetItemRequest.SerializeToString,
+                response_deserializer=users_dot_user__pb2.ItemResponse.FromString,
+                _registered_method=True)
+
+
+class ItemServiceServicer(object):
+    """Missing associated documentation comment in .proto file."""
+
+    def CreateLostItem(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CreateFoundItem(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListLostItems(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListFoundItems(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetItem(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+
+def add_ItemServiceServicer_to_server(servicer, server):
+    rpc_method_handlers = {
+            'CreateLostItem': grpc.unary_unary_rpc_method_handler(
+                    servicer.CreateLostItem,
+                    request_deserializer=users_dot_user__pb2.CreateItemRequest.FromString,
+                    response_serializer=users_dot_user__pb2.ItemResponse.SerializeToString,
+            ),
+            'CreateFoundItem': grpc.unary_unary_rpc_method_handler(
+                    servicer.CreateFoundItem,
+                    request_deserializer=users_dot_user__pb2.CreateItemRequest.FromString,
+                    response_serializer=users_dot_user__pb2.ItemResponse.SerializeToString,
+            ),
+            'ListLostItems': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListLostItems,
+                    request_deserializer=users_dot_user__pb2.ListItemsRequest.FromString,
+                    response_serializer=users_dot_user__pb2.ListItemsResponse.SerializeToString,
+            ),
+            'ListFoundItems': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListFoundItems,
+                    request_deserializer=users_dot_user__pb2.ListItemsRequest.FromString,
+                    response_serializer=users_dot_user__pb2.ListItemsResponse.SerializeToString,
+            ),
+            'GetItem': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetItem,
+                    request_deserializer=users_dot_user__pb2.GetItemRequest.FromString,
+                    response_serializer=users_dot_user__pb2.ItemResponse.SerializeToString,
+            ),
+    }
+    generic_handler = grpc.method_handlers_generic_handler(
+            'lostfound.v1.ItemService', rpc_method_handlers)
+    server.add_generic_rpc_handlers((generic_handler,))
+    server.add_registered_method_handlers('lostfound.v1.ItemService', rpc_method_handlers)
+
+
+ # This class is part of an EXPERIMENTAL API.
+class ItemService(object):
+    """Missing associated documentation comment in .proto file."""
+
+    @staticmethod
+    def CreateLostItem(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/lostfound.v1.ItemService/CreateLostItem',
+            users_dot_user__pb2.CreateItemRequest.SerializeToString,
+            users_dot_user__pb2.ItemResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CreateFoundItem(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/lostfound.v1.ItemService/CreateFoundItem',
+            users_dot_user__pb2.CreateItemRequest.SerializeToString,
+            users_dot_user__pb2.ItemResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListLostItems(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/lostfound.v1.ItemService/ListLostItems',
+            users_dot_user__pb2.ListItemsRequest.SerializeToString,
+            users_dot_user__pb2.ListItemsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListFoundItems(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/lostfound.v1.ItemService/ListFoundItems',
+            users_dot_user__pb2.ListItemsRequest.SerializeToString,
+            users_dot_user__pb2.ListItemsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetItem(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/lostfound.v1.ItemService/GetItem',
+            users_dot_user__pb2.GetItemRequest.SerializeToString,
+            users_dot_user__pb2.ItemResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+
+class MatchServiceStub(object):
+    """Missing associated documentation comment in .proto file."""
+
+    def __init__(self, channel):
+        """Constructor.
+
+        Args:
+            channel: A grpc.Channel.
+        """
+        self.ListOwnerAlerts = channel.unary_unary(
+                '/lostfound.v1.MatchService/ListOwnerAlerts',
+                request_serializer=users_dot_user__pb2.ListOwnerAlertsRequest.SerializeToString,
+                response_deserializer=users_dot_user__pb2.ListOwnerAlertsResponse.FromString,
+                _registered_method=True)
+        self.AcceptMatch = channel.unary_unary(
+                '/lostfound.v1.MatchService/AcceptMatch',
+                request_serializer=users_dot_user__pb2.MatchDecisionRequest.SerializeToString,
+                response_deserializer=users_dot_user__pb2.OperationResult.FromString,
+                _registered_method=True)
+        self.RejectMatch = channel.unary_unary(
+                '/lostfound.v1.MatchService/RejectMatch',
+                request_serializer=users_dot_user__pb2.MatchDecisionRequest.SerializeToString,
+                response_deserializer=users_dot_user__pb2.OperationResult.FromString,
+                _registered_method=True)
+        self.MarkClaimed = channel.unary_unary(
+                '/lostfound.v1.MatchService/MarkClaimed',
+                request_serializer=users_dot_user__pb2.MatchDecisionRequest.SerializeToString,
+                response_deserializer=users_dot_user__pb2.OperationResult.FromString,
+                _registered_method=True)
+
+
+class MatchServiceServicer(object):
+    """Missing associated documentation comment in .proto file."""
+
+    def ListOwnerAlerts(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def AcceptMatch(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RejectMatch(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def MarkClaimed(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+
+def add_MatchServiceServicer_to_server(servicer, server):
+    rpc_method_handlers = {
+            'ListOwnerAlerts': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListOwnerAlerts,
+                    request_deserializer=users_dot_user__pb2.ListOwnerAlertsRequest.FromString,
+                    response_serializer=users_dot_user__pb2.ListOwnerAlertsResponse.SerializeToString,
+            ),
+            'AcceptMatch': grpc.unary_unary_rpc_method_handler(
+                    servicer.AcceptMatch,
+                    request_deserializer=users_dot_user__pb2.MatchDecisionRequest.FromString,
+                    response_serializer=users_dot_user__pb2.OperationResult.SerializeToString,
+            ),
+            'RejectMatch': grpc.unary_unary_rpc_method_handler(
+                    servicer.RejectMatch,
+                    request_deserializer=users_dot_user__pb2.MatchDecisionRequest.FromString,
+                    response_serializer=users_dot_user__pb2.OperationResult.SerializeToString,
+            ),
+            'MarkClaimed': grpc.unary_unary_rpc_method_handler(
+                    servicer.MarkClaimed,
+                    request_deserializer=users_dot_user__pb2.MatchDecisionRequest.FromString,
+                    response_serializer=users_dot_user__pb2.OperationResult.SerializeToString,
+            ),
+    }
+    generic_handler = grpc.method_handlers_generic_handler(
+            'lostfound.v1.MatchService', rpc_method_handlers)
+    server.add_generic_rpc_handlers((generic_handler,))
+    server.add_registered_method_handlers('lostfound.v1.MatchService', rpc_method_handlers)
+
+
+ # This class is part of an EXPERIMENTAL API.
+class MatchService(object):
+    """Missing associated documentation comment in .proto file."""
+
+    @staticmethod
+    def ListOwnerAlerts(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/lostfound.v1.MatchService/ListOwnerAlerts',
+            users_dot_user__pb2.ListOwnerAlertsRequest.SerializeToString,
+            users_dot_user__pb2.ListOwnerAlertsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def AcceptMatch(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/lostfound.v1.MatchService/AcceptMatch',
+            users_dot_user__pb2.MatchDecisionRequest.SerializeToString,
+            users_dot_user__pb2.OperationResult.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RejectMatch(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/lostfound.v1.MatchService/RejectMatch',
+            users_dot_user__pb2.MatchDecisionRequest.SerializeToString,
+            users_dot_user__pb2.OperationResult.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def MarkClaimed(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/lostfound.v1.MatchService/MarkClaimed',
+            users_dot_user__pb2.MatchDecisionRequest.SerializeToString,
+            users_dot_user__pb2.OperationResult.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+
+class ProfileServiceStub(object):
+    """Missing associated documentation comment in .proto file."""
+
+    def __init__(self, channel):
+        """Constructor.
+
+        Args:
+            channel: A grpc.Channel.
+        """
+        self.GetProfile = channel.unary_unary(
+                '/lostfound.v1.ProfileService/GetProfile',
+                request_serializer=users_dot_user__pb2.GetProfileRequest.SerializeToString,
+                response_deserializer=users_dot_user__pb2.ProfileResponse.FromString,
+                _registered_method=True)
+        self.UpdateProfile = channel.unary_unary(
+                '/lostfound.v1.ProfileService/UpdateProfile',
+                request_serializer=users_dot_user__pb2.UpdateProfileRequest.SerializeToString,
+                response_deserializer=users_dot_user__pb2.ProfileResponse.FromString,
+                _registered_method=True)
+
+
+class ProfileServiceServicer(object):
+    """Missing associated documentation comment in .proto file."""
+
+    def GetProfile(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def UpdateProfile(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+
+def add_ProfileServiceServicer_to_server(servicer, server):
+    rpc_method_handlers = {
+            'GetProfile': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetProfile,
+                    request_deserializer=users_dot_user__pb2.GetProfileRequest.FromString,
+                    response_serializer=users_dot_user__pb2.ProfileResponse.SerializeToString,
+            ),
+            'UpdateProfile': grpc.unary_unary_rpc_method_handler(
+                    servicer.UpdateProfile,
+                    request_deserializer=users_dot_user__pb2.UpdateProfileRequest.FromString,
+                    response_serializer=users_dot_user__pb2.ProfileResponse.SerializeToString,
+            ),
+    }
+    generic_handler = grpc.method_handlers_generic_handler(
+            'lostfound.v1.ProfileService', rpc_method_handlers)
+    server.add_generic_rpc_handlers((generic_handler,))
+    server.add_registered_method_handlers('lostfound.v1.ProfileService', rpc_method_handlers)
+
+
+ # This class is part of an EXPERIMENTAL API.
+class ProfileService(object):
+    """Missing associated documentation comment in .proto file."""
+
+    @staticmethod
+    def GetProfile(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/lostfound.v1.ProfileService/GetProfile',
+            users_dot_user__pb2.GetProfileRequest.SerializeToString,
+            users_dot_user__pb2.ProfileResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def UpdateProfile(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/lostfound.v1.ProfileService/UpdateProfile',
+            users_dot_user__pb2.UpdateProfileRequest.SerializeToString,
+            users_dot_user__pb2.ProfileResponse.FromString,
             options,
             channel_credentials,
             insecure,
