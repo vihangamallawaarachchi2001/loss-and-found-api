@@ -24,17 +24,55 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10users/user.proto\x12\x04user\"\"\n\x11\x43reateUserRequest\x12\r\n\x05\x65mail\x18\x01 \x01(\t\")\n\x0cUserResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t2H\n\x0bUserService\x12\x39\n\nCreateUser\x12\x17.user.CreateUserRequest\x1a\x12.user.UserResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10users/user.proto\x12\x0clostfound.v1\"3\n\x0fOperationResult\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\"/\n\x0cLoginRequest\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"C\n\rSignupRequest\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\x12\x11\n\tfull_name\x18\x03 \x01(\t\"P\n\x0c\x41uthResponse\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x11\n\tfull_name\x18\x03 \x01(\t\x12\r\n\x05token\x18\x04 \x01(\t\"&\n\x15\x46orgotPasswordRequest\x12\r\n\x05\x65mail\x18\x01 \x01(\t\"H\n\x14ResetPasswordRequest\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x0b\n\x03otp\x18\x02 \x01(\t\x12\x14\n\x0cnew_password\x18\x03 \x01(\t\"\x95\x01\n\x11\x43reateItemRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\r\n\x05title\x18\x02 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x03 \x01(\t\x12\x10\n\x08\x63\x61tegory\x18\x04 \x01(\t\x12\x10\n\x08location\x18\x05 \x01(\t\x12\x12\n\nevent_date\x18\x06 \x01(\t\x12\x13\n\x0bimage_paths\x18\x07 \x03(\t\"1\n\x10ListItemsRequest\x12\r\n\x05limit\x18\x01 \x01(\x05\x12\x0e\n\x06offset\x18\x02 \x01(\x05\"\x1c\n\x0eGetItemRequest\x12\n\n\x02id\x18\x01 \x01(\t\"\x90\x02\n\x0cItemResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x11\n\titem_type\x18\x03 \x01(\t\x12\r\n\x05title\x18\x04 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x05 \x01(\t\x12\x10\n\x08\x63\x61tegory\x18\x06 \x01(\t\x12\x10\n\x08location\x18\x07 \x01(\t\x12\x12\n\nevent_date\x18\x08 \x01(\t\x12\x0e\n\x06status\x18\t \x01(\t\x12\x13\n\x0bimage_paths\x18\n \x03(\t\x12\x12\n\ntext_score\x18\x0b \x01(\x01\x12\x13\n\x0bimage_score\x18\x0c \x01(\x01\x12\x12\n\nconfidence\x18\r \x01(\x01\x12\x12\n\ncreated_at\x18\x0e \x01(\t\"M\n\x11ListItemsResponse\x12)\n\x05items\x18\x01 \x03(\x0b\x32\x1a.lostfound.v1.ItemResponse\x12\r\n\x05total\x18\x02 \x01(\x05\"/\n\x16ListOwnerAlertsRequest\x12\x15\n\rowner_user_id\x18\x01 \x01(\t\"\x86\x01\n\nOwnerAlert\x12\x14\n\x0clost_item_id\x18\x01 \x01(\t\x12\x15\n\rfound_item_id\x18\x02 \x01(\t\x12\x12\n\ntext_score\x18\x03 \x01(\x01\x12\x13\n\x0bimage_score\x18\x04 \x01(\x01\x12\x12\n\nconfidence\x18\x05 \x01(\x01\x12\x0e\n\x06status\x18\x06 \x01(\t\"C\n\x17ListOwnerAlertsResponse\x12(\n\x06\x61lerts\x18\x01 \x03(\x0b\x32\x18.lostfound.v1.OwnerAlert\"_\n\x14MatchDecisionRequest\x12\x14\n\x0clost_item_id\x18\x01 \x01(\t\x12\x15\n\rfound_item_id\x18\x02 \x01(\t\x12\x1a\n\x12\x64\x65\x63ided_by_user_id\x18\x03 \x01(\t\"$\n\x11GetProfileRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\"^\n\x14UpdateProfileRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x11\n\tfull_name\x18\x02 \x01(\t\x12\r\n\x05phone\x18\x03 \x01(\t\x12\x13\n\x0b\x61vatar_path\x18\x04 \x01(\t\"h\n\x0fProfileResponse\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x11\n\tfull_name\x18\x03 \x01(\t\x12\r\n\x05phone\x18\x04 \x01(\t\x12\x13\n\x0b\x61vatar_path\x18\x05 \x01(\t2\xbb\x02\n\x0b\x41uthService\x12?\n\x05Login\x12\x1a.lostfound.v1.LoginRequest\x1a\x1a.lostfound.v1.AuthResponse\x12\x41\n\x06Signup\x12\x1b.lostfound.v1.SignupRequest\x1a\x1a.lostfound.v1.AuthResponse\x12T\n\x0e\x46orgotPassword\x12#.lostfound.v1.ForgotPasswordRequest\x1a\x1d.lostfound.v1.OperationResult\x12R\n\rResetPassword\x12\".lostfound.v1.ResetPasswordRequest\x1a\x1d.lostfound.v1.OperationResult2\x96\x03\n\x0bItemService\x12M\n\x0e\x43reateLostItem\x12\x1f.lostfound.v1.CreateItemRequest\x1a\x1a.lostfound.v1.ItemResponse\x12N\n\x0f\x43reateFoundItem\x12\x1f.lostfound.v1.CreateItemRequest\x1a\x1a.lostfound.v1.ItemResponse\x12P\n\rListLostItems\x12\x1e.lostfound.v1.ListItemsRequest\x1a\x1f.lostfound.v1.ListItemsResponse\x12Q\n\x0eListFoundItems\x12\x1e.lostfound.v1.ListItemsRequest\x1a\x1f.lostfound.v1.ListItemsResponse\x12\x43\n\x07GetItem\x12\x1c.lostfound.v1.GetItemRequest\x1a\x1a.lostfound.v1.ItemResponse2\xe4\x02\n\x0cMatchService\x12^\n\x0fListOwnerAlerts\x12$.lostfound.v1.ListOwnerAlertsRequest\x1a%.lostfound.v1.ListOwnerAlertsResponse\x12P\n\x0b\x41\x63\x63\x65ptMatch\x12\".lostfound.v1.MatchDecisionRequest\x1a\x1d.lostfound.v1.OperationResult\x12P\n\x0bRejectMatch\x12\".lostfound.v1.MatchDecisionRequest\x1a\x1d.lostfound.v1.OperationResult\x12P\n\x0bMarkClaimed\x12\".lostfound.v1.MatchDecisionRequest\x1a\x1d.lostfound.v1.OperationResult2\xb2\x01\n\x0eProfileService\x12L\n\nGetProfile\x12\x1f.lostfound.v1.GetProfileRequest\x1a\x1d.lostfound.v1.ProfileResponse\x12R\n\rUpdateProfile\x12\".lostfound.v1.UpdateProfileRequest\x1a\x1d.lostfound.v1.ProfileResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'users.user_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_CREATEUSERREQUEST']._serialized_start=26
-  _globals['_CREATEUSERREQUEST']._serialized_end=60
-  _globals['_USERRESPONSE']._serialized_start=62
-  _globals['_USERRESPONSE']._serialized_end=103
-  _globals['_USERSERVICE']._serialized_start=105
-  _globals['_USERSERVICE']._serialized_end=177
+  _globals['_OPERATIONRESULT']._serialized_start=34
+  _globals['_OPERATIONRESULT']._serialized_end=85
+  _globals['_LOGINREQUEST']._serialized_start=87
+  _globals['_LOGINREQUEST']._serialized_end=134
+  _globals['_SIGNUPREQUEST']._serialized_start=136
+  _globals['_SIGNUPREQUEST']._serialized_end=203
+  _globals['_AUTHRESPONSE']._serialized_start=205
+  _globals['_AUTHRESPONSE']._serialized_end=285
+  _globals['_FORGOTPASSWORDREQUEST']._serialized_start=287
+  _globals['_FORGOTPASSWORDREQUEST']._serialized_end=325
+  _globals['_RESETPASSWORDREQUEST']._serialized_start=327
+  _globals['_RESETPASSWORDREQUEST']._serialized_end=399
+  _globals['_CREATEITEMREQUEST']._serialized_start=402
+  _globals['_CREATEITEMREQUEST']._serialized_end=551
+  _globals['_LISTITEMSREQUEST']._serialized_start=553
+  _globals['_LISTITEMSREQUEST']._serialized_end=602
+  _globals['_GETITEMREQUEST']._serialized_start=604
+  _globals['_GETITEMREQUEST']._serialized_end=632
+  _globals['_ITEMRESPONSE']._serialized_start=635
+  _globals['_ITEMRESPONSE']._serialized_end=907
+  _globals['_LISTITEMSRESPONSE']._serialized_start=909
+  _globals['_LISTITEMSRESPONSE']._serialized_end=986
+  _globals['_LISTOWNERALERTSREQUEST']._serialized_start=988
+  _globals['_LISTOWNERALERTSREQUEST']._serialized_end=1035
+  _globals['_OWNERALERT']._serialized_start=1038
+  _globals['_OWNERALERT']._serialized_end=1172
+  _globals['_LISTOWNERALERTSRESPONSE']._serialized_start=1174
+  _globals['_LISTOWNERALERTSRESPONSE']._serialized_end=1241
+  _globals['_MATCHDECISIONREQUEST']._serialized_start=1243
+  _globals['_MATCHDECISIONREQUEST']._serialized_end=1338
+  _globals['_GETPROFILEREQUEST']._serialized_start=1340
+  _globals['_GETPROFILEREQUEST']._serialized_end=1376
+  _globals['_UPDATEPROFILEREQUEST']._serialized_start=1378
+  _globals['_UPDATEPROFILEREQUEST']._serialized_end=1472
+  _globals['_PROFILERESPONSE']._serialized_start=1474
+  _globals['_PROFILERESPONSE']._serialized_end=1578
+  _globals['_AUTHSERVICE']._serialized_start=1581
+  _globals['_AUTHSERVICE']._serialized_end=1896
+  _globals['_ITEMSERVICE']._serialized_start=1899
+  _globals['_ITEMSERVICE']._serialized_end=2305
+  _globals['_MATCHSERVICE']._serialized_start=2308
+  _globals['_MATCHSERVICE']._serialized_end=2664
+  _globals['_PROFILESERVICE']._serialized_start=2667
+  _globals['_PROFILESERVICE']._serialized_end=2845
 # @@protoc_insertion_point(module_scope)
