@@ -1,0 +1,11 @@
+[project]
+name = "loss-and-found-backend"
+version = "0.1.0"
+description = "Loss and found Python gRPC backend"
+requires-python = ">=3.11"
+
+[tool.black]
+line-length = 100
+
+[tool.isort]
+profile = "black"
